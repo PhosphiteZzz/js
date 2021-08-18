@@ -98,3 +98,5 @@
 「读」属性时<strong>会</strong>沿着原型链搜索。
 
 「新增」属性时<strong>不会</strong>去看原型链
+
+![pic](https://raw.githubusercontent.com/PhosphiteZzz/js/main/4%E3%80%81js%E5%8E%9F%E5%9E%8B%E9%93%BE/6.png)
