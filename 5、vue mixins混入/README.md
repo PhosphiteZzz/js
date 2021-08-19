@@ -92,23 +92,90 @@ export default {
 ```
 ④我们分别切换到两个页面，查看控制台输出。会发现组件1改变了age里面的值，组件2中age值还是混合对象的初始值，并没有随着组件1的增加而改变
 
+![pic](https://raw.githubusercontent.com/PhosphiteZzz/js/main/5%E3%80%81vue%20mixins%E6%B7%B7%E5%85%A5/1.png)
 
+引入mixins后组件会对其进行合并，将mixins中的数据和方法拓展到当前组件中来，在合并的过程中会出现冲突，接下来我们详细了解Mixins合并冲突
+<br/>
+## 六、Mixins合并冲突
+### 值为对象(components、methods 、computed、data)的选项，混入组件时选项会被合并，键冲突时优先组件，组件中的键会覆盖混入对象的
+<br/>
+①我们在混入对象增加age属性、getAge1方法和getAge2方法
+``` js
+export const myMixins = {
+  components: {},
+  data() {
+    return {
+      age: 18
+    }
+  },
+  methods:{
+    getAge1(){
+      console.log('js age1', this.age);
+    }
+  }
+}
+```
+②我们在引入了myMixins文件的组件中，增加age属性、getAge1方法
+``` js
+import { myMixins } from "./mixins";
+export default {
+  mixins: [myMixins],
+  data() {
+    return {};
+  },
+  mounted() {
+    this.getAge1();
+  },
+  methods: {
+    getAge1(){
+        console.log("vue ",this.age)
+    }
+  },
+  components: {},
+};
+```
+③我们会发现，组件中的age覆盖了混合对象的age，组件的getAge1方法覆盖了混合对象的getAge1方法
+![pic](https://raw.githubusercontent.com/PhosphiteZzz/js/main/5%E3%80%81vue%20mixins%E6%B7%B7%E5%85%A5/2.png)
 
+### 值为函数(created、mounted)的选项，混入组件时选项会被合并调用，混合对象里的钩子函数在组件里的钩子函数之前调用
+``` js
 
+export const myMixins = {
+  components:{},
+  data() {
+    return {}
+  },
+  created() {
+    console.log('xxx from mixins')
+  }
+}
+``` 
+``` js
 
+import { myMixins } from "@/mixins/myMixins.js";
+export default {
+  mixins: [myMixins],
+  data() {
+    return {}
+  },
+  created() {
+    console.log('xxx from template')
+  }
+}
+```
+![pic](https://raw.githubusercontent.com/PhosphiteZzz/js/main/5%E3%80%81vue%20mixins%E6%B7%B7%E5%85%A5/3.png)
 
+## 七、与vuex的区别
+<br/>
+#### vuex：用来做状态管理的，里面定义的变量在每个组件中均可以使用和修改，在任一组件中修改此变量的值之后，其他组件中此变量的值也会随之修改。
 
+#### Mixins：可以定义共用的变量，在每个组件中使用，引入组件中之后，各个变量是相互独立的，值的修改在组件中不会相互影响。
+<br/>
+## 八、与公共组件的区别
+<br/>
+#### 组件：在父组件中引入组件，相当于在父组件中给出一片独立的空间供子组件使用，然后根据props来传值，但本质上两者是相对独立的。
 
-
-
-
-
-
-
-
-
-
-
+#### Mixins：则是在引入组件之后与组件中的对象和方法进行合并，相当于扩展了父组件的对象与方法，可以理解为形成了一个新的组件。
 
 
 
